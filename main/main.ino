@@ -1,10 +1,10 @@
-#include <StandardCplusplus.h>
+
 #include <system_configuration.h>
 #include <unwind-cxx.h>
 #include <utility.h>
+//#include "sd_avg.cpp"
 
 
-#include "sd_avg.cpp"
 #define ledPin 2
 #define buttonPin 3
 
@@ -25,6 +25,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 double times[10]; 
 
 void setup() {
+  Serial.begin(9600);
   pinMode(buttonPin, INPUT);
   pinMode(ledPin, OUTPUT);
   // set initial LED state
@@ -65,6 +66,7 @@ void led_on_off(){
       // only toggle the LED if the new button state is HIGH
       if (buttonState == HIGH) {
         ledState = !ledState;
+        Serial.print("Pressed");
       }
     }
   }
@@ -74,10 +76,12 @@ void led_on_off(){
   
   if(ledState == HIGH && lastLEDState == LOW){
     startTime = millis();
+    Serial.println(startTime);
   }
   if(ledState == LOW && lastLEDState == HIGH){
     endTime = millis();
-    difference = endTime - startTime;
+    Serial.println(endTime);
+    difference = (endTime - startTime)/1000.0;
     Serial.println(difference);
   }
   lastLEDState = ledState;
