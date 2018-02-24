@@ -13,7 +13,9 @@ int ledState = HIGH;         // the current state of the output pin
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 int lastLEDState = LOW;      // the previous reading from the LED pin
-
+float difference;
+   float endTime;
+   float startTime;
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
@@ -22,7 +24,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-double times[10]; 
+double timeDifferences[10]; 
 
 void setup() {
   Serial.begin(9600);
@@ -42,9 +44,7 @@ void led_on_off(){
 
   // read the state of the switch into a local variable:
   int reading = digitalRead(buttonPin);
-  float difference;
-   float startTime;
-   float endTime;
+  
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH), and you've waited long enough
   // since the last press to ignore any noise:
@@ -66,7 +66,6 @@ void led_on_off(){
       // only toggle the LED if the new button state is HIGH
       if (buttonState == HIGH) {
         ledState = !ledState;
-        Serial.print("Pressed");
       }
     }
   }
@@ -76,12 +75,15 @@ void led_on_off(){
   
   if(ledState == HIGH && lastLEDState == LOW){
     startTime = millis();
+    Serial.print("startTime =");
     Serial.println(startTime);
   }
-  if(ledState == LOW && lastLEDState == HIGH){
+  else if(ledState == LOW && lastLEDState == HIGH){
     endTime = millis();
+    Serial.print("endTime =");
     Serial.println(endTime);
     difference = (endTime - startTime)/1000.0;
+    Serial.print("difference =");
     Serial.println(difference);
   }
   lastLEDState = ledState;
