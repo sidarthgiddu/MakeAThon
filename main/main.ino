@@ -1,6 +1,7 @@
 #include <StandardCplusplus.h>
 #include <system_configuration.h>
 #include <unwind-cxx.h>
+#include <vector>
 #include <utility.h>
 using namespace std;
 //#include "sd_avg.cpp"
@@ -25,7 +26,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-double timeDifferences[10]; 
+vector<double> timeDifferences;
 
 double sd(vector<int> v){
     double sum = 0.0, mean, standardDeviation = 0.0;
@@ -118,6 +119,7 @@ void led_on_off(){
     Serial.print("endTime =");
     Serial.println(endTime);
     difference = (endTime - startTime)/1000.0;
+    timeDifferences.push_back(difference);
     Serial.print("difference =");
     Serial.println(difference);
     
