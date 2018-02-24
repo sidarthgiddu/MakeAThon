@@ -1,7 +1,8 @@
-
+#include <StandardCplusplus.h>
 #include <system_configuration.h>
 #include <unwind-cxx.h>
 #include <utility.h>
+using namespace std;
 //#include "sd_avg.cpp"
 
 
@@ -25,6 +26,40 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 // array
 double timeDifferences[10]; 
+
+double sd(vector<int> v){
+    double sum = 0.0, mean, standardDeviation = 0.0;
+    
+    
+    for(vector<int>::iterator it = v.begin(); it != v.end(); it++)
+    {
+        sum += *it;
+    }
+    
+    mean = sum/v.size();
+    
+    for(auto it = v.begin(); it != v.end(); it++){
+        standardDeviation += pow(*it - mean, 2);
+    }
+    
+    return sqrt(standardDeviation / v.size());
+}
+
+double avg(vector<int> v){
+    double sum = 0.0;
+    for(vector<int>::iterator it = v.begin(); it != v.end(); it++)
+    {
+        sum += *it;
+    }
+    return sum/v.size();
+}
+
+bool abnormal(int value, double sd, double avg){
+    if (value >= 2*sd + avg){
+        return true;
+    }
+    return false;
+}
 
 void setup() {
   Serial.begin(9600);
