@@ -1,21 +1,88 @@
 
-#define LEDPin 2
-#define ButtonPin 3
-bool mode = true;
+#include "sd_avg.cpp"
+#define ledPin 2
+#define buttonPin 3
+
+// Variables will change:
+int ledState = HIGH;         // the current state of the output pin
+int buttonState;             // the current reading from the input pin
+int lastButtonState = LOW;   // the previous reading from the input pin
+
+
+// the following variables are unsigned longs because the time, measured in
+// milliseconds, will quickly become a bigger number than can be stored in an int.
+unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
+unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+
+// array
+unsigned double times[10]; 
 
 void setup() {
-  // put your setup code here, to run once:
-  
-  pinMode(LEDPin, OUTPUT);
-  pinMode(ButtonPin, INPUT);
-  
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  // set initial LED state
+  digitalWrite(ledPin, ledState);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  digitalWrite(LEDPin, HIGH);
-  int button = digitalRead(ButtonPin);
-
-  if (button)
-    digitalWrite(LEDPin, not mode);
+  led_on_off();
+  checktime();
 }
+
+
+
+void led_on_off(){
+
+  // read the state of the switch into a local variable:
+  int reading = digitalRead(buttonPin);
+
+  // check to see if you just pressed the button
+  // (i.e. the input went from LOW to HIGH), and you've waited long enough
+  // since the last press to ignore any noise:
+
+  // If the switch changed, due to noise or pressing:
+  if (reading != lastButtonState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState) {
+      buttonState = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState == HIGH) {
+        ledState = !ledState;
+      }
+    }
+  }
+
+  // set the LED:
+  digitalWrite(ledPin, ledState);
+
+  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  lastButtonState = reading;
+  
+}
+
+
+void checktime(){
+
+   float difference;
+   float startTime;
+   float endTime;
+   if (ledState == HIGH && (buttonState != lastButtonState))
+      startTime = millis();
+   else if (led State == LOW && (buttonState != lastButtonState))
+      endTime = millis(); 
+      difference = endTime-startTime;
+      Serial.println(difference);
+          
+
+  lastButtonState = reading;
+}
+
