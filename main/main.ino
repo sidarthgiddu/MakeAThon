@@ -1,3 +1,8 @@
+#include <StandardCplusplus.h>
+#include <system_configuration.h>
+#include <unwind-cxx.h>
+#include <utility.h>
+
 
 #include "sd_avg.cpp"
 #define ledPin 2
@@ -17,7 +22,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-unsigned double times[10]; 
+double times[10]; 
 
 void setup() {
   pinMode(buttonPin, INPUT);
@@ -68,12 +73,12 @@ void led_on_off(){
   digitalWrite(ledPin, ledState);
   
   if(ledState == HIGH && lastLEDState == LOW){
-    starttime = millis();
+    startTime = millis();
   }
-  if(ledState = LOW && lastLEDState = HIGH){
-    endtime = millis();
-    difference = endtime - starttime;
-    Serial.println(difference + " ms");
+  if(ledState == LOW && lastLEDState == HIGH){
+    endTime = millis();
+    difference = endTime - startTime;
+    Serial.println(difference);
   }
   lastLEDState = ledState;
   
