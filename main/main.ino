@@ -6,17 +6,25 @@ using namespace std;
 //#include "sd_avg.cpp"
 
 
-#define ledPin 2
 #define buttonPin 3
 
+// Functions
+void led_on_off();
+void checkuser();
+
+
 // Variables will change:
+float difference;
+float endTime;
+float startTime;
+int ledPin = 2;
+
+// States
 int ledState = HIGH;         // the current state of the output pin
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 int lastLEDState = LOW;      // the previous reading from the LED pin
-float difference;
-float endTime;
-float startTime;
+
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
@@ -26,7 +34,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 // array
 double timeDifferences[10]; 
-
+/*
 double sd(vector<int> v){
     double sum = 0.0, mean, standardDeviation = 0.0;
     
@@ -59,7 +67,7 @@ bool abnormal(int value, double sd, double avg){
         return true;
     }
     return false;
-}
+}*/
 
 void setup() {
   Serial.begin(9600);
@@ -127,6 +135,30 @@ void led_on_off(){
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
   
+}
+
+void check_user() {
+  //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
+  pinMode(ledPin, OUTPUT);
+  Serial.println("Enter 0 to turn the LED off, enter 1 to turn the LED on");
+  while(Serial.available() == 0){}
+  char num = Serial.read();
+  if(num != '0' && num != '1'){
+    Serial.println("Error");  
+  }
+  else{
+    if(num == '0'){
+      Serial.println("LED is off"); 
+      digitalWrite(ledPin, HIGH); 
+    }
+    else{
+      Serial.println("LED is on");  
+      digitalWrite(ledPin, LOW);
+    }
+  }
+  //run the decision for 5 seconds (5000 ms)
+  delay(5000);
+  //repeat the loop
 }
 
 
