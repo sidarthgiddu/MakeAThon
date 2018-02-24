@@ -7,12 +7,14 @@
 int ledState = HIGH;         // the current state of the output pin
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
+int lastLEDState = LOW;      // the previous reading from the LED pin
 
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
 unsigned long debounceDelay = 50;    // the debounce time; increase if the output flickers
+
 
 // array
 unsigned double times[10]; 
@@ -26,7 +28,6 @@ void setup() {
 
 void loop() {
   led_on_off();
-  checktime();
 }
 
 
@@ -35,7 +36,9 @@ void led_on_off(){
 
   // read the state of the switch into a local variable:
   int reading = digitalRead(buttonPin);
-
+  float difference;
+   float startTime;
+   float endTime;
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH), and you've waited long enough
   // since the last press to ignore any noise:
@@ -63,26 +66,20 @@ void led_on_off(){
 
   // set the LED:
   digitalWrite(ledPin, ledState);
-
+  
+  if(ledState == HIGH && lastLEDState == LOW){
+    starttime = millis();
+  }
+  if(ledState = LOW && lastLEDState = HIGH){
+    endtime = millis();
+    difference = endtime - starttime;
+    Serial.println(difference + " ms");
+  }
+  lastLEDState = ledState;
+  
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
   
 }
 
-
-void checktime(){
-
-   float difference;
-   float startTime;
-   float endTime;
-   if (ledState == HIGH && (buttonState != lastButtonState))
-      startTime = millis();
-   else if (led State == LOW && (buttonState != lastButtonState))
-      endTime = millis(); 
-      difference = endTime-startTime;
-      Serial.println(difference);
-          
-
-  lastButtonState = reading;
-}
 
