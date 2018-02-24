@@ -15,8 +15,8 @@ int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 int lastLEDState = LOW;      // the previous reading from the LED pin
 float difference;
-   float endTime;
-   float startTime;
+float endTime;
+float startTime;
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
@@ -108,18 +108,19 @@ void led_on_off(){
   // set the LED:
   digitalWrite(ledPin, ledState);
   
-  if(ledState == HIGH && lastLEDState == LOW){
+  if(ledState == LOW && lastLEDState == HIGH){
     startTime = millis();
     Serial.print("startTime =");
     Serial.println(startTime);
   }
-  else if(ledState == LOW && lastLEDState == HIGH){
+  else if(ledState == HIGH && lastLEDState == LOW){
     endTime = millis();
     Serial.print("endTime =");
     Serial.println(endTime);
     difference = (endTime - startTime)/1000.0;
     Serial.print("difference =");
     Serial.println(difference);
+    
   }
   lastLEDState = ledState;
   
