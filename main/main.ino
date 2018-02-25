@@ -110,7 +110,13 @@ void led_on_off(){
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
       check_user(reading);
   else if(ledState == HIGH && lastLEDState == LOW)
+  else if(ledState == HIGH && lastLEDState == LOW){
+    if (timeDifference.size() >= 10){
+      timeDifferences.erase(timeDifferences.begin());
+    }
     timeDifferences.push_back(difference);
+  }
+    
   lastLEDState = ledState;
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
@@ -123,13 +129,22 @@ void check_user(int n) {
       Serial.println("Press y for yes and n for no.");
     }
     msgCount++;
+<<<<<<< HEAD
   char num = Serial.read();
+=======
+
+  char num = Serial.read();
+
+>>>>>>> c27e337a3e5ed7862326a85dc20efbe5828db856
     if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH;
       msgCount = 0;
+<<<<<<< HEAD
 
+=======
+>>>>>>> c27e337a3e5ed7862326a85dc20efbe5828db856
     }
     else if (num=='n'){
       Serial.println("LED is on");  
