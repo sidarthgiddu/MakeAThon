@@ -19,16 +19,16 @@ float difference;
 float endTime;
 float startTime;
 int ledPin = 2;
-bool flag = true;
+int currAvg = 0;
+int currSD = 0;
+int msgCount = 0;
 
 // States
 int ledState = HIGH;         // the current state of the output pin
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 int lastLEDState = LOW;      // the previous reading from the LED pin
-int currAvg = 0;
-int currSD = 0;
-int msgCount = 0;
+
 
 
 // the following variables are unsigned longs because the time, measured in
@@ -100,7 +100,8 @@ void led_on_off(){
     //Serial.println(endTime);
     difference = (endTime - startTime);
     Serial.print("difference = ");
-    Serial.println(difference);
+    Serial.print(difference);
+    Serial.println(" milliseconds");
     msgCount = 0;
   }
 
@@ -111,48 +112,32 @@ void led_on_off(){
   else if(ledState == HIGH && lastLEDState == LOW)
     timeDifferences.push_back(difference);
   lastLEDState = ledState;
-  
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
   
 }
 
 void check_user(int n) {
-//  if (flag){
     if(msgCount == 0) {
-    Serial.println("You've been using the light for longer than usual. Should I turn it off?");
+      Serial.println("You've been using the light for longer than usual. Should I turn it off?");
+      Serial.println("Press y for yes and n for no.");
     }
     msgCount++;
-//    flag = !flag;
-//  }
-  //while(Serial.available() == 0){
-  //  if (n != digitalRead(buttonPin))
-  //      break;
-  //}
   char num = Serial.read();
-//  if(num != 'y' && num != 'n'){
-//    Serial.println("Error");  
-//  }
-//  else{
     if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH;
       msgCount = 0;
-//      flag = true;
+
     }
     else if (num=='n'){
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
       timeDifferences.push_back(difference);
       ledState = LOW;
-      startTime=millis();
-//      flag = false;   
     }
 }
-  //run the decision for 5 seconds (5000 ms)
-  //delay(5000);
 
-  //repeat the loop
 
 
