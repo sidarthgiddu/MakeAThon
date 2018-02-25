@@ -105,7 +105,8 @@ void led_on_off(){
   currAvg = avg(timeDifferences);
   currSD = sd(timeDifferences);
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) {
-    Serial.println("ay guy this been on too long. bad for environment");
+    check_user();
+    
   }
 
   
@@ -119,14 +120,14 @@ void led_on_off(){
 void check_user() {
   //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
   pinMode(ledPin, OUTPUT);
-  Serial.println("Enter 0 to turn the LED off, enter 1 to turn the LED on");
+  Serial.println("You've been using the light for longer than usual. Should I turn it off?");
   while(Serial.available() == 0){}
   char num = Serial.read();
-  if(num != '0' && num != '1'){
+  if(num != 'y' && num != 'n'){
     Serial.println("Error");  
   }
   else{
-    if(num == '0'){
+    if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH); 
     }
