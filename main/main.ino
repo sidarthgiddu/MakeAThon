@@ -34,9 +34,9 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-<<<<<<< HEAD
+
 double timeDifferences[10]; 
-/*
+
 =======
 vector<double> timeDifferences;
 
@@ -73,7 +73,7 @@ bool abnormal(int value, double sd, double avg){
         return true;
     }
     return false;
-}*/
+}
 
 void setup() {
   Serial.begin(9600);
