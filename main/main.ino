@@ -97,17 +97,20 @@ void led_on_off(){
     //Serial.print("endTime =");
     //Serial.println(endTime);
     difference = (endTime - startTime);
-    timeDifferences.push_back(difference);
-    Serial.print("difference =");
+        Serial.print("difference =");
     Serial.println(difference);
   }
 
   currAvg = avg(timeDifferences);
   currSD = sd(timeDifferences);
-  if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) {
+  if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
     check_user();
+  else
+    timeDifferences.push_back(difference);
+      
     
-  }
+
+    
 
   
   lastLEDState = ledState;
@@ -121,12 +124,15 @@ void check_user() {
   //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
   pinMode(ledPin, OUTPUT);
   Serial.println("You've been using the light for longer than usual. Should I turn it off?");
-  //while(Serial.available() == 0){}
+//  while(Serial.available() == 0){
+//    if (digitalRead(buttonPin)==HIGH)
+//        break;
+//  }
   char num = Serial.read();
-  /*if(num != 'y' && num != 'n'){
+  if(num != 'y' && num != 'n'){
     Serial.println("Error");  
   }
-  else{*/
+  else{
     if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
@@ -135,10 +141,11 @@ void check_user() {
     else{
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
-      ledState = LOW;
+      timeDifferences.push_back(difference);
     }
-  //}
-  
+  }
+  //run the decision for 5 seconds (5000 ms)
+  //delay(5000);
   //repeat the loop
 }
 
