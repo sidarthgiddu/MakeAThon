@@ -6,8 +6,14 @@
 using namespace std;
 #include "sd_avg.h"
 
+// PINS
+#define button1Pin 3
+int button2Pin = 7;
+int button3Pin = 8;
+int led1Pin = 2;
+int led2Pin = 5;
+int led3Pin = 6;
 
-#define buttonPin 3
 
 // Functions
 void led_on_off();
@@ -18,7 +24,7 @@ void checkuser(int n);
 float difference;
 float endTime;
 float startTime;
-int ledPin = 2;
+
 int currAvg = 0;
 int currSD = 0;
 int msgCount = 0;
@@ -44,14 +50,19 @@ vector<int> timeDifferences;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(buttonPin, INPUT);
-  pinMode(ledPin, OUTPUT);
+  pinMode(button1Pin, INPUT);
+  pinMode(led1Pin, OUTPUT);
+  pinMode(led2Pin, OUTPUT);
+  pinMode(led3Pin, OUTPUT);
   // set initial LED state
-  digitalWrite(ledPin, ledState);
+  digitalWrite(led1Pin, ledState);
+  digitalWrite(led2Pin, LOW);
+  digitalWrite(led3Pin, LOW);
 }
 
 void loop() {
   led_on_off();
+  
 }
 
 
@@ -59,7 +70,7 @@ void loop() {
 void led_on_off(){
 
   // read the state of the switch into a local variable:
-  int reading = digitalRead(buttonPin);
+  int reading = digitalRead(button1Pin);
   
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH), and you've waited long enough
@@ -87,7 +98,7 @@ void led_on_off(){
   }
 
   // set the LED:
-  digitalWrite(ledPin, ledState);
+  digitalWrite(led1Pin, ledState);
   
   if(ledState == LOW && lastLEDState == HIGH){
     startTime = millis();
@@ -110,7 +121,7 @@ void led_on_off(){
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
       check_user(reading);
   else if(ledState == HIGH && lastLEDState == LOW){
-    if (timeDifference.size() >= 10){
+    if (timeDifferences.size() >= 10){
       timeDifferences.erase(timeDifferences.begin());
     }
     timeDifferences.push_back(difference);
@@ -126,28 +137,24 @@ void check_user(int n) {
     if(msgCount == 0) {
       Serial.println("You've been using the light for longer than usual. Should I turn it off?");
       Serial.println("Press y for yes and n for no.");
+      msgCount++;
     }
-    msgCount++;
-<<<<<<< HEAD
-  char num = Serial.read();
-=======
+    
 
   char num = Serial.read();
 
->>>>>>> c27e337a3e5ed7862326a85dc20efbe5828db856
     if(num == 'y'){
       Serial.println("LED is off"); 
-      digitalWrite(ledPin, HIGH);
+      digitalWrite(led1Pin, HIGH);
       ledState = HIGH;
       msgCount = 0;
-<<<<<<< HEAD
-
-=======
->>>>>>> c27e337a3e5ed7862326a85dc20efbe5828db856
     }
     else if (num=='n'){
       Serial.println("LED is on");  
-      digitalWrite(ledPin, LOW);
+      digitalWrite(led1Pin, LOW);
+      if (timeDifferences.size() >= 10){
+      timeDifferences.erase(timeDifferences.begin());
+      }
       timeDifferences.push_back(difference);
       ledState = LOW;
     }
