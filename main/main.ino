@@ -121,23 +121,24 @@ void check_user() {
   //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
   pinMode(ledPin, OUTPUT);
   Serial.println("You've been using the light for longer than usual. Should I turn it off?");
-  while(Serial.available() == 0){}
+  //while(Serial.available() == 0){}
   char num = Serial.read();
-  if(num != 'y' && num != 'n'){
+  /*if(num != 'y' && num != 'n'){
     Serial.println("Error");  
   }
-  else{
+  else{*/
     if(num == 'y'){
       Serial.println("LED is off"); 
-      digitalWrite(ledPin, HIGH); 
+      digitalWrite(ledPin, HIGH);
+      ledState = HIGH; 
     }
     else{
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
+      ledState = LOW;
     }
-  }
-  //run the decision for 5 seconds (5000 ms)
-  delay(5000);
+  //}
+  
   //repeat the loop
 }
 
