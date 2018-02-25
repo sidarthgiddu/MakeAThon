@@ -19,6 +19,7 @@ float difference;
 float endTime;
 float startTime;
 int ledPin = 2;
+bool flag = true;
 
 // States
 int ledState = HIGH;         // the current state of the output pin
@@ -97,7 +98,7 @@ void led_on_off(){
     //Serial.print("endTime =");
     //Serial.println(endTime);
     difference = (endTime - startTime);
-        Serial.print("difference =");
+    Serial.print("difference = ");
     Serial.println(difference);
   }
 
@@ -107,12 +108,6 @@ void led_on_off(){
     check_user();
   else
     timeDifferences.push_back(difference);
-      
-    
-
-    
-
-  
   lastLEDState = ledState;
   
   // save the reading. Next time through the loop, it'll be the lastButtonState:
@@ -123,30 +118,36 @@ void led_on_off(){
 void check_user() {
   //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
   pinMode(ledPin, OUTPUT);
-  Serial.println("You've been using the light for longer than usual. Should I turn it off?");
+  if (flag){
+    Serial.println("You've been using the light for longer than usual. Should I turn it off?");
+    flag = !flag;
+  }
 //  while(Serial.available() == 0){
 //    if (digitalRead(buttonPin)==HIGH)
 //        break;
 //  }
   char num = Serial.read();
-  if(num != 'y' && num != 'n'){
-    Serial.println("Error");  
-  }
-  else{
+//  if(num != 'y' && num != 'n'){
+//    Serial.println("Error");  
+//  }
+//  else{
     if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH; 
+      flag = true;
     }
-    else{
+    else if (num=='n'){
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
       timeDifferences.push_back(difference);
+      ledState = LOW;
+      flag = true;   
     }
-  }
+}
   //run the decision for 5 seconds (5000 ms)
   //delay(5000);
   //repeat the loop
-}
+
 
 
