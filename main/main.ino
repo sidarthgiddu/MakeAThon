@@ -108,8 +108,13 @@ void led_on_off(){
   currSD = sd(timeDifferences);
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
       check_user(reading);
-  else if(ledState == HIGH && lastLEDState == LOW)
+  else if(ledState == HIGH && lastLEDState == LOW){
+    if (timeDifference.size() >= 10){
+      timeDifferences.erase(timeDifferences.begin());
+    }
     timeDifferences.push_back(difference);
+  }
+    
   lastLEDState = ledState;
   
   // save the reading. Next time through the loop, it'll be the lastButtonState:
@@ -118,36 +123,24 @@ void led_on_off(){
 }
 
 void check_user(int n) {
-//  if (flag){
     if(msgCount == 0) {
     Serial.println("You've been using the light for longer than usual. Should I turn it off?");
     }
     msgCount++;
-//    flag = !flag;
-//  }
-  //while(Serial.available() == 0){
-  //  if (n != digitalRead(buttonPin))
-  //      break;
-  //}
+
   char num = Serial.read();
-//  if(num != 'y' && num != 'n'){
-//    Serial.println("Error");  
-//  }
-//  else{
+
     if(num == 'y'){
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH;
       msgCount = 0;
-//      flag = true;
     }
     else if (num=='n'){
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
       timeDifferences.push_back(difference);
       ledState = LOW;
-      startTime=millis();
-//      flag = false;   
     }
 }
   //run the decision for 5 seconds (5000 ms)
