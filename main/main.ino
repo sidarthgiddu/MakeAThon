@@ -109,7 +109,6 @@ void led_on_off(){
   currSD = sd(timeDifferences);
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
       check_user(reading);
-  else if(ledState == HIGH && lastLEDState == LOW)
   else if(ledState == HIGH && lastLEDState == LOW){
     if (timeDifference.size() >= 10){
       timeDifferences.erase(timeDifferences.begin());
