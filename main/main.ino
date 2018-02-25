@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility.h>
 using namespace std;
-//#include "sd_avg.cpp"
+#include "sd_avg.h"
 
 
 #define buttonPin 3
@@ -34,46 +34,9 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-
-double timeDifferences[10]; 
-
-=======
 vector<double> timeDifferences;
 
->>>>>>> 8171317c0381891cc388b0cf8bff10f7f1ae3b52
-double sd(vector<int> v){
-    double sum = 0.0, mean, standardDeviation = 0.0;
-    
-    
-    for(vector<int>::iterator it = v.begin(); it != v.end(); it++)
-    {
-        sum += *it;
-    }
-    
-    mean = sum/v.size();
-    
-    for(auto it = v.begin(); it != v.end(); it++){
-        standardDeviation += pow(*it - mean, 2);
-    }
-    
-    return sqrt(standardDeviation / v.size());
-}
 
-double avg(vector<int> v){
-    double sum = 0.0;
-    for(vector<int>::iterator it = v.begin(); it != v.end(); it++)
-    {
-        sum += *it;
-    }
-    return sum/v.size();
-}
-
-bool abnormal(int value, double sd, double avg){
-    if (value >= 2*sd + avg){
-        return true;
-    }
-    return false;
-}
 
 void setup() {
   Serial.begin(9600);
@@ -124,18 +87,17 @@ void led_on_off(){
   
   if(ledState == LOW && lastLEDState == HIGH){
     startTime = millis();
-    Serial.print("startTime =");
-    Serial.println(startTime);
+    //Serial.print("startTime =");
+    //Serial.println(startTime);
   }
   else if(ledState == HIGH && lastLEDState == LOW){
     endTime = millis();
-    Serial.print("endTime =");
-    Serial.println(endTime);
+    //Serial.print("endTime =");
+    //Serial.println(endTime);
     difference = (endTime - startTime)/1000.0;
     timeDifferences.push_back(difference);
     Serial.print("difference =");
     Serial.println(difference);
-    
   }
   lastLEDState = ledState;
   
