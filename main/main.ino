@@ -16,50 +16,62 @@ int led3Pin = 6;
 
 
 // Functions
-void led_on_off(int ledPin, int buttonPin, int &buttonState, int &ledState, int &lastButtonState, int &lastLEDState, float &difference, float &endTime, float &startTime, double &currAvg, double &currSD, int &msgCount, vector<int> &timeDifferences);
-void checkuser(int &ledPin, int &msgCount, int &ledState, vector<int> &timeDifferences, float &difference);
+void led_on_off1();
+void checkuser1();
 
 
 // Variables will change:
-// LED1
-float difference1=0.0;
+float difference1;
 float endTime1;
 float startTime1;
-double currAvg1 = 0;
-double currSD1 = 0;
+
+int currAvg1 = 0;
+int currSD1 = 0;
 int msgCount1 = 0;
 
-// LED2
-float difference2=0.0;
+// States
+int ledState1 = HIGH;         // the current state of the output pin
+int buttonState1;             // the current reading from the input pin
+int lastButtonState1 = LOW;   // the previous reading from the input pin
+int lastLEDState1 = LOW;      // the previous reading from the LED pin
+
+void led_on_off2();
+void checkuser2();
+
+
+// Variables will change:
+float difference2;
 float endTime2;
 float startTime2;
-double currAvg2 = 0;
-double currSD2 = 0;
+
+int currAvg2 = 0;
+int currSD2 = 0;
 int msgCount2 = 0;
 
-//LED3
-float difference3=0.0;
+// States
+int ledState2 = HIGH;         // the current state of the output pin
+int buttonState2;             // the current reading from the input pin
+int lastButtonState2 = LOW;   // the previous reading from the input pin
+int lastLEDState2 = LOW;      // the previous reading from the LED pin
+
+void led_on_off3();
+void checkuser3();
+
+
+// Variables will change:
+float difference3;
 float endTime3;
 float startTime3;
-double currAvg3 = 0;
-double currSD3 = 0;
+
+int currAvg3 = 0;
+int currSD3 = 0;
 int msgCount3 = 0;
 
 // States
-int led1State = HIGH;         // the current state of the output pin
-int button1State;             // the current reading from the input pin
-int lastButton1State = LOW;   // the previous reading from the input pin
-int lastLED1State = LOW;      // the previous reading from the LED pin
-
-int led2State = HIGH;         // the current state of the output pin
-int button2State;             // the current reading from the input pin
-int lastButton2State = LOW;   // the previous reading from the input pin
-int lastLED2State = LOW;      // the previous reading from the LED pin
-
-int led3State = HIGH;         // the current state of the output pin
-int button3State;             // the current reading from the input pin
-int lastButton3State = LOW;   // the previous reading from the input pin
-int lastLED3State = LOW;      // the previous reading from the LED pin
+int ledState3 = HIGH;         // the current state of the output pin
+int buttonState3;             // the current reading from the input pin
+int lastButtonState3 = LOW;   // the previous reading from the input pin
+int lastLEDState3 = LOW;      // the previous reading from the LED pin
 
 
 
@@ -70,46 +82,43 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-vector<int> time1Differences;
-vector<int> time2Differences;
-vector<int> time3Differences;
+vector<int> timeDifferences1;
+vector<int> timeDifferences2;
+vector<int> timeDifferences3;
 
 
 
 void setup() {
   Serial.begin(9600);
   pinMode(button1Pin, INPUT);
-  pinMode(button2Pin, INPUT);
-  pinMode(button3Pin, INPUT);
   pinMode(led1Pin, OUTPUT);
   pinMode(led2Pin, OUTPUT);
   pinMode(led3Pin, OUTPUT);
   // set initial LED state
-  digitalWrite(led1Pin, led1State);
-  digitalWrite(led2Pin, led2State);
-  digitalWrite(led3Pin, led3State);
+  digitalWrite(led1Pin, ledState1);
+  digitalWrite(led2Pin, ledState2);
+  digitalWrite(led3Pin, ledState3);
 }
 
 void loop() {
-  led_on_off( led1Pin,  button1Pin,  button1State,  led1State,  lastButton1State,  lastLED1State,  difference1,  endTime1,  startTime1,  currAvg1,  currSD1,  msgCount1, time1Differences);
-  led_on_off( led2Pin,  button2Pin,  button2State,  led2State,  lastButton2State,  lastLED2State,  difference2,  endTime2,  startTime2,  currAvg2,  currSD2,  msgCount2, time2Differences);
-  led_on_off( led3Pin,  button3Pin,  button3State,  led3State,  lastButton3State,  lastLED3State,  difference3,  endTime3,  startTime3,  currAvg3,  currSD3,  msgCount3, time3Differences);
-  
+  led_on_off1();
+  led_on_off2();
+  led_on_off3();
 }
 
 
 
-void led_on_off(int ledPin, int buttonPin, int &buttonState, int &ledState, int &lastButtonState, int &lastLEDState, int &difference, int &endTime, int &startTime, double &currAvg, double &currSD, int &msgCount, vector<int> &timeDifferences){
+void led_on_off1(){
 
   // read the state of the switch into a local variable:
-  int reading = digitalRead(buttonPin);
+  int reading = digitalRead(button1Pin);
   
   // check to see if you just pressed the button
   // (i.e. the input went from LOW to HIGH), and you've waited long enough
   // since the last press to ignore any noise:
 
   // If the switch changed, due to noise or pressing:
-  if (reading != lastButtonState) {
+  if (reading != lastButtonState1) {
     // reset the debouncing timer
     lastDebounceTime = millis();
   }
@@ -119,88 +128,478 @@ void led_on_off(int ledPin, int buttonPin, int &buttonState, int &ledState, int 
     // delay, so take it as the actual current state:
 
     // if the button state has changed:
-    if (reading != buttonState) {
-      buttonState = reading;
+    if (reading != buttonState1) {
+      buttonState1 = reading;
 
       // only toggle the LED if the new button state is HIGH
-      if (buttonState == HIGH) {
-        ledState = !ledState;
+      if (buttonState1 == HIGH) {
+        ledState1 = !ledState1;
       }
     }
   }
 
   // set the LED:
-  digitalWrite(ledPin, ledState);
+  digitalWrite(led1Pin, ledState1);
   
-  if(ledState == LOW && lastLEDState == HIGH){
-    startTime = millis();
+  if(ledState1 == LOW && lastLEDState1 == HIGH){
+    startTime1 = millis();
     //Serial.print("startTime =");
     //Serial.println(startTime);
   }
-  else if(ledState == HIGH && lastLEDState == LOW && millis() != 0){
-    endTime = millis();
+  else if(ledState1 == HIGH && lastLEDState1 == LOW && millis() != 0){
+    endTime1 = millis();
     //Serial.print("endTime =");
     //Serial.println(endTime);
-    difference = (float)(endTime - startTime);
-    Serial.print("difference = ");
-    Serial.print(difference);
-    Serial.println(" milliseconds");
-    msgCount = 0;
+    difference1 = (endTime1 - startTime1);
+//    Serial.print("difference = ");
+//    Serial.print(difference1);
+//    Serial.println(" milliseconds");
+    msgCount1 = 0;
   }
 
-  currAvg = avg(timeDifferences);
-  currSD = sd(timeDifferences);
-  if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
-      check_user(ledPin, msgCount, ledState, timeDifferences, difference);
-  else if(ledState == HIGH && lastLEDState == LOW){
-    if (timeDifferences.size() >= 10){
-      timeDifferences.erase(timeDifferences.begin());
+  currAvg1 = avg(timeDifferences1);
+  currSD1 = sd(timeDifferences1);
+  if(millis() - startTime1 > currAvg1 + 2*currSD1 && ledState1 == LOW) 
+      check_user1();
+  else if(ledState1 == HIGH && lastLEDState1 == LOW){
+    if (timeDifferences1.size() >= 10){
+      timeDifferences1.erase(timeDifferences1.begin());
     }
-    timeDifferences.push_back(difference);
+    timeDifferences1.push_back(difference1);
   }
     
-  lastLEDState = ledState;
+  lastLEDState1 = ledState1;
   // save the reading. Next time through the loop, it'll be the lastButtonState:
-  lastButtonState = reading;
+  lastButtonState1 = reading;
   
 }
 
-void check_user(int &ledPin, int &msgCount, int &ledState, vector<int> &timeDifferences, float &difference) {
-    if(msgCount == 0) {
-      Serial.print("You've been using the light "); 
-      Serial.print(ledPin); 
+void check_user1() {
+    if(msgCount1 == 0) {
+      Serial.print("You've been using light");
+      Serial.print(led1Pin);
+      Serial.println(" for longer than usual. Should I turn it off?");
+      Serial.println("Press 2 for yes and x for no.");
+      msgCount1++;
+    }
+    
+
+  char num = Serial.read();
+
+    if(num == '6'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led3Pin, HIGH);
+      ledState3 = HIGH;
+      msgCount3 = 0;
+    }
+    else if (num == '5'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led2Pin, HIGH);
+      ledState2 = HIGH;
+      msgCount2 = 0;
+    }
+    else if (num == '2'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led1Pin, HIGH);
+      ledState1 = HIGH;
+      msgCount1 = 0;
+    }
+    else if (num=='x'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is on");  
+      digitalWrite(led1Pin, LOW);
+      if (timeDifferences1.size() >= 10){
+      timeDifferences1.erase(timeDifferences1.begin());
+      }
+      timeDifferences1.push_back(difference1);
+      ledState1 = LOW;
+    }
+    else if (num=='y'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is on");  
+      digitalWrite(led2Pin, LOW);
+      if (timeDifferences2.size() >= 10){
+      timeDifferences2.erase(timeDifferences2.begin());
+      }
+      timeDifferences2.push_back(difference2);
+      ledState2 = LOW;
+    }
+    else if (num=='z'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is on");  
+      digitalWrite(led3Pin, LOW);
+      if (timeDifferences3.size() >= 10){
+      timeDifferences3.erase(timeDifferences3.begin());
+      }
+      timeDifferences3.push_back(difference3);
+      ledState3 = LOW;
+    }
+}
+
+void led_on_off2(){
+
+  // read the state of the switch into a local variable:
+  int reading = digitalRead(button2Pin);
+  
+  // check to see if you just pressed the button
+  // (i.e. the input went from LOW to HIGH), and you've waited long enough
+  // since the last press to ignore any noise:
+
+  // If the switch changed, due to noise or pressing:
+  if (reading != lastButtonState2) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState2) {
+      buttonState2 = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState2 == HIGH) {
+        ledState2 = !ledState2;
+      }
+    }
+  }
+
+  // set the LED:
+  digitalWrite(led2Pin, ledState2);
+  
+  if(ledState2 == LOW && lastLEDState2 == HIGH){
+    startTime2 = millis();
+    //Serial.print("startTime =");
+    //Serial.println(startTime);
+  }
+  else if(ledState2 == HIGH && lastLEDState2 == LOW && millis() != 0){
+    endTime2 = millis();
+    //Serial.print("endTime =");
+    //Serial.println(endTime);
+    difference2 = (endTime2 - startTime2);
+//    Serial.print("difference = ");
+//    Serial.print(difference2);
+//    Serial.println(" milliseconds");
+    msgCount2 = 0;
+  }
+
+  currAvg2 = avg(timeDifferences2);
+  currSD2 = sd(timeDifferences2);
+  if(millis() - startTime2 > currAvg2 + 2*currSD2 && ledState2 == LOW) 
+      check_user2();
+  else if(ledState2 == HIGH && lastLEDState2 == LOW){
+    if (timeDifferences2.size() >= 10){
+      timeDifferences2.erase(timeDifferences2.begin());
+    }
+    timeDifferences2.push_back(difference2);
+  }
+    
+  lastLEDState2 = ledState2;
+  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  lastButtonState2 = reading;
+  
+}
+
+void check_user2() {
+    if(msgCount2 == 0) {
+      Serial.print("You've been using light");
+      Serial.print(led2Pin);
+      Serial.println(" for longer than usual. Should I turn it off?");
+      Serial.println("Press 5 for yes and y for no.");
+      msgCount2++;
+    }
+    
+
+ char num = Serial.read();
+
+    if(num == '6'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led3Pin, HIGH);
+      ledState3 = HIGH;
+      msgCount3 = 0;
+    }
+    else if (num == '5'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led2Pin, HIGH);
+      ledState2 = HIGH;
+      msgCount2 = 0;
+    }
+    else if (num == '2'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led1Pin, HIGH);
+      ledState1 = HIGH;
+      msgCount1 = 0;
+    }
+    else if (num=='x'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is on");  
+      digitalWrite(led1Pin, LOW);
+      if (timeDifferences1.size() >= 10){
+      timeDifferences1.erase(timeDifferences1.begin());
+      }
+      timeDifferences1.push_back(difference1);
+      ledState1 = LOW;
+    }
+    else if (num=='y'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is on");  
+      digitalWrite(led2Pin, LOW);
+      if (timeDifferences2.size() >= 10){
+      timeDifferences2.erase(timeDifferences2.begin());
+      }
+      timeDifferences2.push_back(difference2);
+      ledState2 = LOW;
+    }
+    else if (num=='z'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is on");  
+      digitalWrite(led3Pin, LOW);
+      if (timeDifferences3.size() >= 10){
+      timeDifferences3.erase(timeDifferences3.begin());
+      }
+      timeDifferences3.push_back(difference3);
+      ledState3 = LOW;
+    }
+}
+
+void led_on_off3(){
+
+  // read the state of the switch into a local variable:
+  int reading = digitalRead(button3Pin);
+  
+  // check to see if you just pressed the button
+  // (i.e. the input went from LOW to HIGH), and you've waited long enough
+  // since the last press to ignore any noise:
+
+  // If the switch changed, due to noise or pressing:
+  if (reading != lastButtonState3) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState3) {
+      buttonState3 = reading;
+
+      // only toggle the LED if the new button state is HIGH
+      if (buttonState3 == HIGH) {
+        ledState3 = !ledState3;
+      }
+    }
+  }
+
+  // set the LED:
+  digitalWrite(led3Pin, ledState3);
+  
+  if(ledState3 == LOW && lastLEDState3 == HIGH){
+    startTime3 = millis();
+    //Serial.print("startTime =");
+    //Serial.println(startTime);
+  }
+  else if(ledState3 == HIGH && lastLEDState3 == LOW && millis() != 0){
+    endTime3 = millis();
+    //Serial.print("endTime =");
+    //Serial.println(endTime);
+    difference3 = (endTime3 - startTime3);
+//    Serial.print("difference = ");
+//    Serial.print(difference3);
+//    Serial.println(" milliseconds");
+    msgCount3 = 0;
+  }
+
+  currAvg3 = avg(timeDifferences3);
+  currSD3 = sd(timeDifferences3);
+  if(millis() - startTime3 > currAvg3 + 3*currSD3 && ledState3 == LOW) 
+      check_user3();
+  else if(ledState3 == HIGH && lastLEDState3 == LOW){
+    if (timeDifferences3.size() >= 10){
+      timeDifferences3.erase(timeDifferences3.begin());
+    }
+    timeDifferences3.push_back(difference3);
+  }
+    
+  lastLEDState3 = ledState3;
+  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  lastButtonState3 = reading;
+  
+}
+
+void check_user3() {
+    if(msgCount3 == 0) {
+      Serial.print("You've been using light");
+      Serial.print(led3Pin);
+      Serial.println(" for longer than usual. Should I turn it off?");
+      Serial.println("Press 6 for yes and z for no.");
+      msgCount3++;
+    }
+    
+
+  char num = Serial.read();
+
+    if(num == '6'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led3Pin, HIGH);
+      ledState3 = HIGH;
+      msgCount3 = 0;
+    }
+    else if (num == '5'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led2Pin, HIGH);
+      ledState2 = HIGH;
+      msgCount2 = 0;
+    }
+    else if (num == '2'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is off"); 
+      digitalWrite(led1Pin, HIGH);
+      ledState1 = HIGH;
+      msgCount1 = 0;
+    }
+    else if (num=='x'){
+      Serial.print("LED ");
+      Serial.print(led1Pin);
+      Serial.println(" is on");  
+      digitalWrite(led1Pin, LOW);
+      if (timeDifferences1.size() >= 10){
+      timeDifferences1.erase(timeDifferences1.begin());
+      }
+      timeDifferences1.push_back(difference1);
+      ledState1 = LOW;
+    }
+    else if (num=='y'){
+      Serial.print("LED ");
+      Serial.print(led2Pin);
+      Serial.println(" is on");  
+      digitalWrite(led2Pin, LOW);
+      if (timeDifferences2.size() >= 10){
+      timeDifferences2.erase(timeDifferences2.begin());
+      }
+      timeDifferences2.push_back(difference2);
+      ledState2 = LOW;
+    }
+    else if (num=='z'){
+      Serial.print("LED ");
+      Serial.print(led3Pin);
+      Serial.println(" is on");  
+      digitalWrite(led3Pin, LOW);
+      if (timeDifferences3.size() >= 10){
+      timeDifferences3.erase(timeDifferences3.begin());
+      }
+      timeDifferences3.push_back(difference3);
+      ledState3 = LOW;
+    }
+}
+
+void check_user(int &ledPin, int &msgCount, int &ledState, vector<int> &timeDifferences, float &difference){
+  if(msgCount == 0) {
+      char off;
+      if (ledPin == 2){
+        off = 'x';
+      }
+      else if (ledPin == 5){
+        off = 'y';
+      }
+      else if (ledPin == 6){
+        off = 'z';
+      }
+      Serial.print("You've been using light ");
+      Serial.print(ledPin);
       Serial.println(" for longer than usual. Should I turn it off?");
       Serial.print("Press ");
       Serial.print(ledPin);
       Serial.print(" for yes and "); 
-      Serial.print("0");
+      Serial.print(off);
       Serial.println(" for no.");
       msgCount++;
     }
     
 
-  int num = Serial.read();
-
-    if(num == ledPin){
+  char num = Serial.read();
+  if(num == '6' && ledPin == 6){
       Serial.print("LED ");
-      Serial.print(ledPin);  
-      Serial.println("is off");
+      Serial.print(ledPin);
+      Serial.println(" is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH;
       msgCount = 0;
     }
-    else if (num==0){
+    else if (num == '5' && ledPin == 5){
       Serial.print("LED ");
-      Serial.print(ledPin);  
-      Serial.println("is on"); 
+      Serial.print(ledPin);
+      Serial.println(" is off"); 
+      digitalWrite(ledPin, HIGH);
+      ledState = HIGH;
+      msgCount = 0;
+    }
+    else if (num == '2' && ledPin == 2){
+      Serial.print("LED ");
+      Serial.print(ledPin);
+      Serial.println(" is off"); 
+      digitalWrite(ledPin, HIGH);
+      ledState = HIGH;
+      msgCount = 0;
+    }
+    else if (num=='x'){
+      Serial.print("LED ");
+      Serial.print(ledPin);
+      Serial.println(" is on");  
       digitalWrite(ledPin, LOW);
       if (timeDifferences.size() >= 10){
-        timeDifferences.erase(timeDifferences.begin());
+      timeDifferences.erase(timeDifferences.begin());
+      }
+      timeDifferences.push_back(difference);
+      ledState = LOW;
+    }
+    else if (num=='y'){
+      Serial.print("LED ");
+      Serial.print(ledPin);
+      Serial.println(" is on");  
+      digitalWrite(ledPin, LOW);
+      if (timeDifferences.size() >= 10){
+      timeDifferences.erase(timeDifferences.begin());
+      }
+      timeDifferences.push_back(difference);
+      ledState = LOW;
+    }
+    else if (num=='z'){
+      Serial.print("LED ");
+      Serial.print(ledPin);
+      Serial.println(" is on");  
+      digitalWrite(ledPin, LOW);
+      if (timeDifferences.size() >= 10){
+      timeDifferences.erase(timeDifferences.begin());
       }
       timeDifferences.push_back(difference);
       ledState = LOW;
     }
 }
-
-
 
