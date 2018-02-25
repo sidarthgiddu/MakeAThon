@@ -25,6 +25,8 @@ int ledState = HIGH;         // the current state of the output pin
 int buttonState;             // the current reading from the input pin
 int lastButtonState = LOW;   // the previous reading from the input pin
 int lastLEDState = LOW;      // the previous reading from the LED pin
+int currAvg = 0;
+int currSD = 0;
 
 
 // the following variables are unsigned longs because the time, measured in
@@ -34,7 +36,7 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 
 
 // array
-vector<double> timeDifferences;
+vector<int> timeDifferences;
 
 
 
@@ -90,15 +92,23 @@ void led_on_off(){
     //Serial.print("startTime =");
     //Serial.println(startTime);
   }
-  else if(ledState == HIGH && lastLEDState == LOW){
+  else if(ledState == HIGH && lastLEDState == LOW && millis() != 0){
     endTime = millis();
     //Serial.print("endTime =");
     //Serial.println(endTime);
-    difference = (endTime - startTime)/1000.0;
+    difference = (endTime - startTime);
     timeDifferences.push_back(difference);
     Serial.print("difference =");
     Serial.println(difference);
   }
+
+  currAvg = avg(timeDifferences);
+  currSD = sd(timeDifferences);
+  if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) {
+    Serial.println("ay guy this been on too long. bad for environment");
+  }
+
+  
   lastLEDState = ledState;
   
   // save the reading. Next time through the loop, it'll be the lastButtonState:
