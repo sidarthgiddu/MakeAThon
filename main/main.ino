@@ -11,7 +11,7 @@ using namespace std;
 
 // Functions
 void led_on_off();
-void checkuser();
+void checkuser(int n);
 
 
 // Variables will change:
@@ -105,8 +105,8 @@ void led_on_off(){
   currAvg = avg(timeDifferences);
   currSD = sd(timeDifferences);
   if(millis() - startTime > currAvg + 2*currSD && ledState == LOW) 
-    check_user();
-  else
+      check_user(reading);
+  else if(ledState == HIGH && lastLEDState == LOW)
     timeDifferences.push_back(difference);
   lastLEDState = ledState;
   
@@ -115,17 +115,15 @@ void led_on_off(){
   
 }
 
-void check_user() {
-  //open serial window with message, press 0 to turn the LED off, press 1 to turn the LED on
-  pinMode(ledPin, OUTPUT);
-  if (flag){
+void check_user(int n) {
+//  if (flag){
     Serial.println("You've been using the light for longer than usual. Should I turn it off?");
-    flag = !flag;
-  }
-//  while(Serial.available() == 0){
-//    if (digitalRead(buttonPin)==HIGH)
-//        break;
+//    flag = !flag;
 //  }
+  while(Serial.available() == 0){
+    if (n != digitalRead(buttonPin))
+        break;
+  }
   char num = Serial.read();
 //  if(num != 'y' && num != 'n'){
 //    Serial.println("Error");  
@@ -135,19 +133,20 @@ void check_user() {
       Serial.println("LED is off"); 
       digitalWrite(ledPin, HIGH);
       ledState = HIGH; 
-      flag = true;
+//      flag = true;
     }
     else if (num=='n'){
       Serial.println("LED is on");  
       digitalWrite(ledPin, LOW);
       timeDifferences.push_back(difference);
       ledState = LOW;
-      flag = true;   
+      startTime=millis();
+//      flag = false;   
     }
 }
   //run the decision for 5 seconds (5000 ms)
   //delay(5000);
-  //repeat the loop
 
+  //repeat the loop
 
 
